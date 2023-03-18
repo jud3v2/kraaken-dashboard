@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { useState, useEffect, MouseEventHandler } from 'react';
+import { useState, useEffect } from 'react';
 import {useParams} from 'react-router-dom';
 import {api} from '../api'
 // @mui
@@ -11,14 +11,14 @@ import {
   TextField,
   Select,
   MenuItem,
-  Button,
 } from '@mui/material';
 // components
 import { LoadingButton} from '@mui/lab';
 import {useQuery, useMutation, useQueryClient} from 'react-query';
 import { ClimbingBoxLoader  } from 'react-spinners';
 import { toast } from 'react-hot-toast';
-import Iconify from '../components/iconify';
+import {ProductOption} from "../components/product-option";
+import {Category} from "../types/category";
 // ----------------------------------------------------------------------
 
 export default function CategoryPage() {
@@ -30,7 +30,7 @@ export default function CategoryPage() {
     big_description: '',
     category_uuid: ''
   });
-  const [categoriesList, setCategoriesList] = useState([])
+  const [categoriesList, setCategoriesList] = useState<Category[]>([])
 
 
 
@@ -40,7 +40,7 @@ export default function CategoryPage() {
   const queryClient = useQueryClient();
 
   const {isLoading, data: productData} = useQuery(queryKey, async () => await api.getOneProduct(uuid), {
-    staleTime: Infinity,
+    staleTime: 0,
     cacheTime: 0,
   })
   
@@ -80,6 +80,7 @@ export default function CategoryPage() {
   useEffect(() => {
     if(productData) {
       setProduct(productData)
+      console.log(productData)
     }
 
     if(categoriesData){
@@ -118,9 +119,6 @@ export default function CategoryPage() {
           <Typography variant="h4" gutterBottom>
             Modification du produit: {productData.name}
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
-            Ajouter une option
-          </Button>
         </Stack>
 
         <Card>
@@ -156,7 +154,7 @@ export default function CategoryPage() {
               onChange={handleChange}
               name="category_uuid"
             >
-              {categoriesList.map((category: any) => {
+              {categoriesList.map((category: Category) => {
                 return  <MenuItem key={category.uuid} value={category.uuid}>{category.name}</MenuItem>
               })}
             </Select>
@@ -174,13 +172,7 @@ export default function CategoryPage() {
             </Typography>
           </Stack>
         </Card>
-        <Card>
-          <Stack sx={{m: 2}}>
-            <Typography gutterBottom variant='h6'>
-                Gestion des options
-            </Typography>
-          </Stack>
-        </Card>
+        <ProductOption categories={categoriesList} categoryUUID={productData.category_uuid} productUUID={productData.uuid} data={productData.productOption} />
       </Container>}
     </>
   );

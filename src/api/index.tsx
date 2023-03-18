@@ -53,6 +53,38 @@ export const api = {
     },
     // PRODUCT API
 
+    // OPTION API
+
+    //OPTION
+    optionCreate: async (data: any) => {
+        return await axios.post(`option`, data)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+
+    optionUpdate: async (data: any, uuid: string) => {
+        return await axios.put(`option/${uuid}`, data)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+
+    optionDelete: async (uuid: string) => {
+        return await axios.delete(`option/${uuid}`)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+
+    optionGetOne: async (uuid: string) => {
+        return await axios.get(`option/${uuid}`)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+
+    optionGetAllFromProduct: async (uuid: string) => {
+        return await axios.get(`option/${uuid}/product`)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
     // USER API
     userLogin: async (data: any) => {
         if (data === undefined || data.identifiant === undefined || data.password === undefined){

@@ -33,7 +33,8 @@ type Props = {
   headLabel: any,
   numSelected: number,
   onRequestSort: any,
-  onSelectAllClick: any
+  onSelectAllClick: any,
+  hasCheckbox?: boolean,
 }
 
 export default function UserListHead({
@@ -44,6 +45,7 @@ export default function UserListHead({
   numSelected,
   onRequestSort,
   onSelectAllClick,
+  hasCheckbox = true,
 }: Props) {
   const createSortHandler = (property: any) => (event: any) => {
     onRequestSort(event, property);
@@ -53,11 +55,11 @@ export default function UserListHead({
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          <Checkbox
+           {hasCheckbox ? <Checkbox
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-          />
+          /> : <></>}
         </TableCell>
         {headLabel.map((headCell: any) => (
           <TableCell
