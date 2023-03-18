@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { set, sub } from 'date-fns';
 import { noCase } from 'change-case';
 import { faker } from '@faker-js/faker';
-import { MouseEvent, useState } from 'react';
+import { useState } from 'react';
 // @mui
 import {
   Box,

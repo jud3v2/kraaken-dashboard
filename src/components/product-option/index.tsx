@@ -68,20 +68,7 @@ import {Option} from '../../types/option';
   
 
 type Props = {
-    data: Array<{
-        name: string,
-        uuid: string,
-        descrition: string,
-        big_description: string,
-        isDeleted: boolean,
-        isFirst: boolean,
-        price: number,
-        quantity: number,
-        createdAt: string,
-        updatedAt: string,
-        category_uuid: string,
-        product_uuid: string,
-    }>;
+    data: Option[];
     productUUID: string;
     categoryUUID: string;
     categories: Category[];
@@ -103,7 +90,7 @@ export function ProductOption(props: Props) {
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
-
+  // eslint-disable-next-line
   const [selected, setSelected] = useState([]);
 
   const [orderBy, setOrderBy] = useState('name');
@@ -147,7 +134,7 @@ export function ProductOption(props: Props) {
 
   const handleSelectAllClick = (event: any) => {
     if (event.target.checked) {
-      const newSelecteds: any = props.data.map((n) => n.name);
+      const newSelecteds: any = props.data.map((n: Option) => n.name);
       setSelected(newSelecteds);
       return;
     }
@@ -251,7 +238,6 @@ export function ProductOption(props: Props) {
 
   const handleUpdateClick = () => {
     props.data.map((option: any) => {
-      console.log(option)
       if (option.uuid === currentUUID) {
         setOption({...option, category_uuid: props.categoryUUID});
         toggleUpdateModal();
@@ -367,7 +353,7 @@ export function ProductOption(props: Props) {
                   hasCheckbox={false}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: any) => {
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: Option) => {
                     
                     const name: any = row.name;
                     const uuid: string = row.uuid;
