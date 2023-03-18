@@ -80,7 +80,6 @@ export default function CategoryPage() {
   useEffect(() => {
     if(productData) {
       setProduct(productData)
-      console.log(productData)
     }
 
     if(categoriesData){

@@ -20,7 +20,7 @@ import {
   Modal,
   Box,
   TextField,
-  Select
+  Select,
 } from '@mui/material';
 // components
 import Label from '../../components/label';
@@ -34,7 +34,7 @@ import {api} from '../../api';
 import {toast} from 'react-hot-toast';
 import { LoadingButton } from '@mui/lab';
 import {Category} from '../../types/category';
-import { useFormik } from 'formik';
+import {Option} from '../../types/option';
   // ----------------------------------------------------------------------
   
   function descendingComparator(a: any, b: any, orderBy: any) {
@@ -54,7 +54,6 @@ import { useFormik } from 'formik';
   }
   
   function applySortFilter(array: any, comparator: any, query: any) {
-    console.log(array)
     const stabilizedThis = array.map((el: any, index: number) => [el, index]);
     stabilizedThis.sort((a: any, b: any) => {
       const order = comparator(a[0], b[0]);
@@ -129,6 +128,7 @@ export function ProductOption(props: Props) {
     product: props.productUUID,
   })
 
+  const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
   
   const handleOpenMenu = (event: any, uuid: string) => {
     setOpen(event.currentTarget);
@@ -194,20 +194,94 @@ export function ProductOption(props: Props) {
   // DELETE SECTION
 
   // UPDATE SECTION
+  const toggleUpdateModal = () => {
+    setOpenUpdateModal(!openUpdateModal)
+  }
 
+  const handleUpdate = () => {
+    updateMutate();
+  }
+
+  const {isLoading: updateIsLoading, mutate: updateMutate, reset: updateReset} = useMutation(["products", props.productUUID], async () => {
+
+    if (option.name === '') {
+      toast.error('Le nom de l\'option est requis');
+      return
+    }
+    if (option.description === '') {
+      toast.error('La description de l\'option est requise');
+      return;
+    }
+    if (option.big_description === '') {
+      toast.error('La description longue de l\'option est requise');
+      return;
+    }
+    if (option.price === 0) {
+      toast.error('Le prix de l\'option doit être supérieur à 0 par exemple 1.99');
+      return;
+    }
+    if (option.quantity === 0) {
+      toast.error('La quantité de l\'option doit être supérieur à 0 par exemple 10');
+      return;
+    }
+    
+    await api.optionUpdate(option, currentUUID)
+    .then(() => {
+        toast.success('Option modifié');
+        toggleUpdateModal();
+        setOption({
+          name: '',
+          description: '',
+          big_description: '',
+          price: 0,
+          quantity: 0,
+          category: props.categoryUUID,
+          product: props.productUUID,
+        })
+    })
+    .catch((err) => {
+        toast.error(err.toString());
+    })
+  }, {
+    onSuccess: () => {
+      updateReset();
+      queryClient.invalidateQueries(["products", props.productUUID]);
+    }
+  })
+
+  const handleUpdateClick = () => {
+    props.data.map((option: any) => {
+      console.log(option)
+      if (option.uuid === currentUUID) {
+        setOption({...option, category_uuid: props.categoryUUID});
+        toggleUpdateModal();
+      }
+
+      return option;
+    })
+  }
   // UPDATE SECTION
 
   // CREATE SECTION
     const toggleCreateModal = () => {
+        setOption({
+          name: '',
+          description: '',
+          big_description: '',
+          price: 0,
+          quantity: 0,
+          category: props.categoryUUID,
+          product: props.productUUID,
+        })
         setOpenCreateModal(!openCreateModal)
     }
     
     const cannotChangeOption = () => {
-        toast.error('Vous ne pouvez pas utilisé d\'autres options que celle définis par le produit');
+        toast.error('Vous ne pouvez pas utilisé d\'autres catégorie que celle définis par le produit');
     }
 
     const handleChange = (e: any) => {
-        setOption((prevState) => ({...prevState, [e.target.name]: e.target.value}))
+        setOption((prevState: any) => ({...prevState, [e.target.name]: e.target.value}))
     }
 
     const handleCreate = () => {
@@ -394,8 +468,8 @@ export function ProductOption(props: Props) {
         },
       }}
     >
-      <MenuItem>
-        <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+      <MenuItem onClick={handleUpdateClick}>
+        <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }}  />
         Modifier
       </MenuItem>
 
@@ -410,7 +484,7 @@ export function ProductOption(props: Props) {
       </MenuItem>
     </Popover>
     {/** CREATE MODAL */}
-    <Modal open={openCreateModal} onClose={toggleCreateModal}>
+    <Modal open={openCreateModal} onClose={toggleCreateModal} sx={{borderRadius: 2, overflow: 'auto'}}>
         <Box sx={{
            position: 'absolute',
            top: '50%',
@@ -473,6 +547,70 @@ export function ProductOption(props: Props) {
         </Box>
     </Modal>
     {/** END CREATE MODAL */}
+    {/** UPDATE MODAL */}
+    <Modal open={openUpdateModal} onClose={toggleUpdateModal} sx={{borderRadius: 2, overflow: 'auto'}}>
+        <Box sx={{
+           position: 'absolute',
+           top: '50%',
+           left: '50%',
+           transform: 'translate(-50%, -50%)',
+           bgcolor: 'background.paper',
+           boxShadow: 12,
+           p: 4,
+           borderRadius: 2,
+           width: '80%',
+        }}>
+          <Stack spacing={2}>
+            <Typography variant='h4'>Modifié l'option</Typography>
+          </Stack>
+          <Stack spacing={2} sx={{
+            my: 2,
+          }}>
+            <Typography variant='h6'>Caractèristiques de l'option</Typography>
+          </Stack>
+          <Stack spacing={2}  direction='row' justifyContent={'space-between'}>
+            <TextField name='name' value={option.name} type='text' required onChange={handleChange} label="Nom de l'option" />
+            <TextField name='quantity' value={option.quantity} type='number' onChange={handleChange} required label='Choisissez la quantité' />
+            <TextField name='price' value={option.price} type='number' onChange={handleChange} required label='Choisissez le prix' />
+          </Stack>
+          <Stack spacing={2} sx={{
+            my: 2,
+          }}>
+            <Typography variant='h6'>Description de l'option</Typography>
+          </Stack>
+          <Stack spacing={2}>
+            <TextField name='description' value={option.description} multiline onChange={handleChange} rows={2} required label="Petite description" />
+            <TextField name='big_description' value={option.big_description} onChange={handleChange} multiline rows={4} required label='Grande description' />
+          </Stack>
+          <Stack spacing={2} sx={{
+            my: 2,
+          }}>
+            <Typography variant='h6'>Catégorie affilié</Typography>
+          </Stack>
+          <Stack>
+            <Select
+              label="Séléctionner une catégorie"
+              name="category_uuid"
+              value={props.categoryUUID}
+              onChange={cannotChangeOption}
+            >
+              {props.categories.map((category: Category) => {
+                return  <MenuItem key={category.uuid} value={category.uuid}>{category.name}</MenuItem>
+              })}
+            </Select>
+          </Stack>
+          <Stack spacing={2} sx={{
+            width: '100%',
+            my: 2
+          }}
+          >
+            <LoadingButton variant={'contained'} loading={updateIsLoading} onClick={handleUpdate}>
+              Modifié l'option
+            </LoadingButton>
+          </Stack>
+        </Box>
+    </Modal>
+    {/** END UPDATE MODAL */}
     </>
     )
 } 
