@@ -6,6 +6,19 @@ export type Product = {
     quantity: number;
     price: number;
     description: string;
+    big_description: string;
     category_uuid: string;
-    category?: Category;
+    category: Category;
+    isDeleted: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export type CreateProduct = {
+    name: string;
+    quantity: number;
+    price: number;
+    description: string;
+    big_description: string;
+    category_uuid: string;
 }

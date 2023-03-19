@@ -25,6 +25,7 @@ import {
   Modal,
   Box,
   TextField,
+  Select
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -35,7 +36,11 @@ import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 
 import { useNavigate } from 'react-router-dom';
-import {useQuery} from 'react-query';
+import {useQuery, useMutation, useQueryClient} from 'react-query';
+import {toast} from 'react-hot-toast'
+import {LoadingButton} from '@mui/lab'
+import { CreateProduct } from '../types/product'
+import { Category } from '../types/category'
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -67,7 +72,7 @@ function getComparator(order: any, orderBy: any) {
 }
 
 function applySortFilter(array: any, comparator: any, query: any) {
-  const stabilizedThis = array.map((el: any, index: any) => [el, index]);
+  const stabilizedThis: any = array.map((el: any, index: any) => [el, index]);
   stabilizedThis.sort((a: any, b: any) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
@@ -99,9 +104,18 @@ export default function CategoryPage() {
   const [currentUUID, setCurrentUUID] = useState('');
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
-
-  const [newCategorieName, setNewCategorieName] = useState('')
   
+  const queryClient = useQueryClient();
+
+  const [product, setProduct] = useState<CreateProduct>({
+    name: '',
+    description: '',
+    price: 0,
+    quantity: 0,
+    category_uuid: '',
+    big_description: '',
+  })
+
   // API CALL --------------------------
 
   const queryKey = ['products'];
@@ -110,9 +124,51 @@ export default function CategoryPage() {
     cacheTime: 1000 * 60 * 5,
   })
 
+  const {data: categories} = useQuery(["categories"], async () => await api.categoryAll(), {
+    staleTime: 60_000,
+    cacheTime: 1000 * 60 * 5,
+  })
+
+  const {isSuccess, error, mutate} = useMutation([[queryKey, currentUUID]], async () => {
+    await api.deleteProduct(currentUUID)
+  }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(queryKey)
+    },
+    onError: () => {
+      toast.error('Une erreur est survenue')
+    }
+  })
+
+  const {isLoading: isLoadingCreate, 
+    mutate: mutateCreate, reset} = useMutation(queryKey, async () => {
+    
+    const data = {
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      quantity: product.quantity,
+      category_uuid: product.category_uuid,
+      big_description: product.big_description,
+    }
+    
+    await api.createProduct(data)
+  }, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(queryKey)
+      setOpenCreateModal(false)
+      reset()
+      toast.success('Produit créé avec succès')
+    },
+    onError: () => {
+      toast.error('Erreur lors de la création du produit')
+    }
+  })
+
   // ------------------------------
 
   const products = data || [];
+  const categoriesData = categories || [];
 
   const handleOpenMenu = (event: any, uuid: string) => {
     setCurrentUUID(uuid)
@@ -154,20 +210,24 @@ export default function CategoryPage() {
   };
 
   const handleChangePage = (event: any, newPage: number) => {
+    event.preventDefault();
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event: any) => {
+    event.preventDefault();
     setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
   const handleFilterByName = (event: any) => {
+    event.preventDefault();
     setPage(0);
     setFilterName(event.target.value);
   };
 
   const toggleCreateModal = (event: any) => {
+    event.preventDefault();
     setOpenCreateModal(!openCreateModal)
   }
 
@@ -177,7 +237,55 @@ export default function CategoryPage() {
   }
 
   const handleDelete = async (event: any, uuid: string) => {
-    event.preventDefault();  
+    event.preventDefault();
+    mutate();
+    if(isSuccess) {
+      toast.success('Produit Actif/Inactif')
+    }
+
+    if(error) {
+      toast.error('Erreur lors de la désactivation du produit')
+    }
+  }
+
+  const handleChangeInput = (e: any) => {
+    e.preventDefault();
+    setProduct((product: CreateProduct) => ({...product, [e.target.name]: e.target.value}))
+  }
+
+  const handleCreateProduct = (e: any) => {
+    e.preventDefault();
+    if(product.name === ''){
+      toast.error('Le nom du produit est obligatoire')
+      return
+    }
+    
+    if(product.description === ''){
+      toast.error('La description du produit est obligatoire')
+      return
+    }
+    
+    if(product.price === 0){
+      toast.error('Le prix du produit doit être supérieur à 0 par exemples 1.99')
+      return
+    }
+
+    if(product.quantity === 0){
+      toast.error('La quantité du produit doit être supérieur à 0')
+      return
+    }
+
+    if(product.category_uuid === ''){
+      toast.error('La catégorie du produit est obligatoire')
+      return
+    }
+
+    if(product.big_description === ''){
+      toast.error('La description longue du produit est obligatoire')
+      return
+    }
+
+    mutateCreate();
   }
 
 
@@ -186,14 +294,6 @@ export default function CategoryPage() {
   const filteredUsers = applySortFilter(products, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
-  
-  const handleChangeNewCategorie = (e: any) => {
-    setNewCategorieName(e.target.value)
-  }
-  
-  const handleCreateCategory = async (e: any) => {
-
-  }
 
   return (
     <>
@@ -389,26 +489,63 @@ export default function CategoryPage() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          bgcolor: 'background.paper',
-          boxShadow: 12,
-          p: 4,
-          width: 600,
-          borderRadius: 2,
+           position: 'absolute',
+           top: '50%',
+           left: '50%',
+           transform: 'translate(-50%, -50%)',
+           bgcolor: 'background.paper',
+           boxShadow: 12,
+           p: 4,
+           borderRadius: 2,
+           width: '80%',
         }}>
-          <Typography padding={2} id="modal-modal-title" variant="h6" component="h2">
-            Créer un nouveau produit
-          </Typography>
-          <Stack padding={2} spacing={3}>
-            <TextField name="name" onChange={e => handleChangeNewCategorie(e)} value={newCategorieName} label="Nom du nouveau produit" />
+          <Stack spacing={2}>
+            <Typography variant='h4'>Création d'un nouveau produit</Typography>
           </Stack>
-          <Stack padding={2} spacing={3}>
-          <Button variant="contained" onClick={e => handleCreateCategory(e)} startIcon={<Iconify icon="eva:plus-fill" />}>
-            Créé le produit
-          </Button>
+          <Stack spacing={2} sx={{
+            my: 2,
+          }}>
+            <Typography variant='h6'>Caractèristiques du produit</Typography>
+          </Stack>
+          <Stack spacing={2}  direction='row' justifyContent={'space-between'}>
+            <TextField name='name' value={product.name} type='text' required onChange={handleChangeInput} label="Nom de l'option" />
+            <TextField name='quantity' value={product.quantity} type='number' onChange={handleChangeInput} required label='Choisissez la quantité' />
+            <TextField name='price' value={product.price} type='number' onChange={handleChangeInput} required label='Choisissez le prix' />
+          </Stack>
+          <Stack spacing={2} sx={{
+            my: 2,
+          }}>
+            <Typography variant='h6'>Description du produit</Typography>
+          </Stack>
+          <Stack spacing={2}>
+            <TextField name='description' value={product.description} multiline onChange={handleChangeInput} rows={2} required label="Petite description" />
+            <TextField name='big_description' value={product.big_description} onChange={handleChangeInput} multiline rows={4} required label='Grande description' />
+          </Stack>
+          <Stack spacing={2} sx={{
+            my: 2,
+          }}>
+            <Typography variant='h6'>Catégorie affilié</Typography>
+          </Stack>
+          <Stack>
+            <Select
+              label="Séléctionner une catégorie"
+              name="category_uuid"
+              value={product.category_uuid}
+              onChange={handleChangeInput}
+            >
+              {categoriesData.map((category: Category) => {
+                return  <MenuItem key={category.uuid} value={category.uuid}>{category.name}</MenuItem>
+              })}
+            </Select>
+          </Stack>
+          <Stack spacing={2} sx={{
+            width: '100%',
+            my: 2
+          }}
+          >
+            <LoadingButton variant={'contained'} loading={isLoadingCreate} onClick={handleCreateProduct}>
+              Créé l'option
+            </LoadingButton>
           </Stack>
         </Box>
       </Modal>

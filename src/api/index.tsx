@@ -51,6 +51,17 @@ export const api = {
         .then(({data}) => {return data})
         .catch((err) => {return err})
     },
+
+    deleteProduct: async (uuid: string) => {
+        return await axios.delete('product/' + uuid)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+    createProduct: async (data: any) => {
+        return await axios.post('product', data)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
     // PRODUCT API
 
     // OPTION API
