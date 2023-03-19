@@ -125,7 +125,6 @@ export default function CategoryPage() {
 
   useEffect(() => {
     fetchCategoryData()
-    console.log('called')
   }, [])
 
   const handleOpenMenu = (event: any, uuid: string) => {

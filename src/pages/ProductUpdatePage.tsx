@@ -19,6 +19,7 @@ import { ClimbingBoxLoader  } from 'react-spinners';
 import { toast } from 'react-hot-toast';
 import {ProductOption} from "../components/product-option";
 import {Category} from "../types/category";
+import ImageComponent from "../components/image";
 // ----------------------------------------------------------------------
 
 export default function CategoryPage() {
@@ -164,13 +165,7 @@ export default function CategoryPage() {
             </LoadingButton>
           </Stack>
         </Card>
-        <Card sx={{my: 2}}>
-          <Stack sx={{m: 2}}>
-            <Typography gutterBottom variant='h6'>
-                Gestion des images
-            </Typography>
-          </Stack>
-        </Card>
+        <ImageComponent productUUID={productData.uuid} images={productData.productImage} />
         <ProductOption categories={categoriesList} categoryUUID={productData.category_uuid} productUUID={productData.uuid} data={productData.productOption} />
       </Container>}
     </>

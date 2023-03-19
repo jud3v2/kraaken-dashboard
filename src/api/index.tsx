@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import { config } from '../config/index'
 export const api = {
     // CATEGORY API
     categoryAll: async () => {
@@ -65,8 +65,6 @@ export const api = {
     // PRODUCT API
 
     // OPTION API
-
-    //OPTION
     optionCreate: async (data: any) => {
         return await axios.post(`option`, data)
         .then(({data}) => {return data})
@@ -96,6 +94,8 @@ export const api = {
         .then(({data}) => {return data})
         .catch((err) => {return err})
     },
+    //OPTION API
+    
     // USER API
     userLogin: async (data: any) => {
         if (data === undefined || data.identifiant === undefined || data.password === undefined){
@@ -113,4 +113,46 @@ export const api = {
     },
 
     // USER API
+
+    // IMAGE API
+    imageCreate: async (data: any, uuid: string) => {
+        return await axios.post(`product-image-create/${uuid}`, data)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+
+    imageDelete: async (uuid: string) => {
+        return await axios.delete(`product-image-delete/${uuid}`)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+
+    imageGetAllFromProduct: async (uuid: string) => {
+        return await axios.get(`product-image-get-all/${uuid}`)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+
+    imageChangeToFirst: async (uuid: string, productUUID: string) => {
+        return await axios.put(`product-image-update-first/${uuid}/${productUUID}`)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+
+    imageGetOne: async (uuid: string) => {
+        return await axios.get(`product-image/${uuid}`)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})   
+    },
+
+    imageUpdate: async (data: any, uuid: string) => {
+        return await axios.put(`product-image-update/${uuid}`, data)
+        .then(({data}) => {return data})
+        .catch((err) => {return err})
+    },
+
+    imageGet: (name: string) => {
+        return `${config.apiURL}show-product-image/${name}`
+    },
+    // IMAGE API
 }
