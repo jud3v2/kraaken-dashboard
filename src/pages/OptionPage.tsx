@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useQuery, useQueryClient, useMutation } from 'react-query'
 import { Image } from '../types/image';
 
@@ -38,7 +38,6 @@ export default function OptionPage(props: any) {
     console.log(result)
     const {
         isLoading: optionLoading,
-        refetch: optionRefetch,
     } = useQuery(['options', uuid], async () => {
         const serverResponse = await api.optionGetOne(uuid)
         setResult(serverResponse)

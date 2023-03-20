@@ -164,4 +164,108 @@ export const api = {
         return `${config.apiURL}show-product-image/${name}`
     },
     // IMAGE API
+
+    // ORDER API
+
+    orderCreate: async (data: any) => {
+        return new Promise(async (resolve, reject) => {
+            return await axios.post('order', data)
+            .then(({data}) => resolve(data))
+            .catch((err) => reject(err))
+        })
+    },
+
+    orderGetAll: async () => {
+        return new Promise(async (resolve, reject) => {
+            return await axios.get('order-all')
+            .then(({data}) => resolve(data))
+            .catch((err) => reject(err))
+        })
+    },
+
+    orderGetOne: async (uuid: string|undefined) => {
+        return new Promise(async (resolve, reject) => {
+            if(uuid === undefined) {
+                reject("Missing data")
+            }
+
+            return await axios.get('order/' + uuid + '/products')
+            .then(({data}) => resolve(data))
+            .catch((err) => reject(err))
+        })
+    },
+
+    orderUpdate: async (data: any, uuid: string|undefined) => {
+        return new Promise(async (resolve, reject) => {
+            if(uuid === undefined) {
+                reject("Missing data")
+            }
+
+            return await axios.put('order/' + uuid, data)
+            .then(({data}) => resolve(data))
+            .catch((err) => reject(err))
+        })
+    },
+
+    orderDelete: async (uuid: string|undefined) => {
+        return new Promise(async (resolve, reject) => {
+            if(uuid === undefined) {
+                reject("Missing data")
+            }
+
+            return await axios.delete('order/' + uuid)
+            .then(({data}) => resolve(data))
+            .catch((err) => reject(err))
+        })
+    },
+
+    orderPushProduct: async (data: any, uuid: string|undefined, productUUID: string|undefined) => {
+        return new Promise(async (resolve, reject) => {
+            if(uuid === undefined || productUUID === undefined) {
+                reject("Missing data")
+            }
+
+            return await axios.post(`order-add-product/${uuid}/${productUUID}`, data)
+            .then(({data}) => resolve(data))
+            .catch((err) => reject(err))
+        })
+    },
+
+    orderDeleteProduct: async (data: any, uuid: string | undefined, productUUID: string | undefined) => {
+        return new Promise(async (resolve, reject) => {
+            if(uuid === undefined || productUUID === undefined) {
+                reject("Missing data")
+            }
+
+            return await axios.delete(`order-remove-product/${uuid}/${productUUID}`, data)
+            .then(({data}) => resolve(data))
+            .catch((err) => reject(err))
+        })
+    },
+
+    orderUpdateProductQuantity: async (data: any, uuid: string | undefined, productUUID: string | undefined) => {
+        return new Promise(async (resolve, reject) => {
+            if(uuid === undefined || productUUID === undefined) {
+                reject("Missing data")
+            }
+
+            return await axios.put(`order-update-product/${uuid}/${productUUID}`, data)
+            .then(({data}) => resolve(data))
+            .catch((err) => reject(err))
+        })
+    },
+
+    orderUpdateStatus: async (data: any, uuid: string|undefined) => {
+        return new Promise(async (resolve, reject) => {
+            if(uuid === undefined) {
+                reject("Missing data")
+            }
+
+            return await axios.put('order-status/' + uuid, data)
+            .then(({data}) => resolve(data))
+            .catch((err) => reject(err))
+        })
+    },
+
+    // ORDER API
 }

@@ -1,13 +1,12 @@
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Container, Typography, Divider } from '@mui/material';
+import { Container, Typography, Divider, Stack } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 
 // sections
 import { LoginForm } from '../sections/auth/login';
-
 // ----------------------------------------------------------------------
 
 const StyledRoot = styled('div')(({ theme }) => ({
@@ -40,6 +39,7 @@ const StyledContent = styled('div')(({ theme }) => ({
 
 export default function LoginPage() {
   const mdUp = useResponsive('up', 'md');
+  const Logo = '/assets/images/app/img-lizaora.png';
 
   return (
     <>
@@ -59,6 +59,18 @@ export default function LoginPage() {
         )}
 
         <Container maxWidth="sm">
+          <Stack sx={{
+            width: '100%',
+            justifyContent: 'center',
+            justifyItems: 'center',
+            justifySelf: 'center',
+            alignItems: 'center',
+            alignSelf: 'center',
+            textAlign: 'center',
+            transform: 'translateY(50%)',
+          }}>
+            <img id='logo-image' src={Logo} alt='lizaora-logo'/>
+          </Stack>
           <StyledContent>
             <Divider sx={{ my: 3 }}>
               <Typography variant="body1" sx={{ color: 'text.secondary' }}>

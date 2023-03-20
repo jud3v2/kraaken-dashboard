@@ -11,6 +11,7 @@ import { StyledChart } from './components/chart';
 import ScrollToTop from './components/scroll-to-top';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import './App.css'
 
 // ----------------------------------------------------------------------
 
