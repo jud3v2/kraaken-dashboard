@@ -39,7 +39,6 @@ export default function ImageComponent(props: {images: Image[], productUUID: str
     const {isLoading, mutate, reset: createReset} = useMutation(async  () => {
         images.map(async (image: any) => {
             const formData = new FormData()
-            console.log(image)
             formData.append('image', image.file)
             await api.imageCreate(formData, props.productUUID)
             .then(() => {
@@ -57,6 +56,7 @@ export default function ImageComponent(props: {images: Image[], productUUID: str
         }, 5000)
     }, {
         onSuccess: () => {
+            queryClient.invalidateQueries(['products'])
             queryClient.invalidateQueries(['products', props.productUUID])
         },
         onError: () => {
@@ -97,6 +97,7 @@ export default function ImageComponent(props: {images: Image[], productUUID: str
     }, {
         onSuccess: () => {
             queryClient.invalidateQueries(['products'])
+            queryClient.invalidateQueries(['products', props.productUUID])
         },
     })
 
@@ -150,7 +151,9 @@ export default function ImageComponent(props: {images: Image[], productUUID: str
             <Stack sx={{my: 3}}>
                 <Stack flexDirection={'row'} justifyContent={'space-around'} sx={{height: '10rem'}}>
                     {imagesProps.length > 0 ? imagesProps.map((image: Image, index: number) => (
-                    <div key={index} className="image-item">
+                        <>
+                            {!image.isOption 
+                            ? <div key={index} className="image-item">
                         <Stack sx={{mx: 1, width: '140px', height: '140px'}}>
                             <CardMedia sx={{maxWidth: '100%', maxHeight: '100%', borderRadius: 2}} component='img' image={api.imageGet(image.path)}/>
                             <Stack flexDirection={'row'} sx={{my: 1}} justifyContent={'space-around'}>
@@ -160,7 +163,8 @@ export default function ImageComponent(props: {images: Image[], productUUID: str
                                 <LoadingButton loading={isLoadingDelete} variant='contained' color='error' onClick={(e: any) => removeImage(e, image.uuid)} size='small'>Remove</LoadingButton>
                             </Stack>
                         </Stack>
-                    </div>
+                    </div> : <></>}
+                        </>
                     )) : <>
                         <Typography>
                             Aucune image n'a été ajouté pour le moment

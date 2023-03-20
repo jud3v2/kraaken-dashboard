@@ -170,6 +170,8 @@ export default function CategoryPage() {
   const products = data || [];
   const categoriesData = categories || [];
 
+
+
   const handleOpenMenu = (event: any, uuid: string) => {
     setCurrentUUID(uuid)
     setOpen(event.currentTarget);

@@ -1,4 +1,5 @@
 import { Category } from './category';
+import { Image } from './image';
 
 export type Option = {
     uuid: string;
@@ -16,4 +17,5 @@ export type Option = {
     productOrder?: any; //TODO: add type for productOrder
     createdAt: string;
     updatedAt: string;
+    productImage: Image[]
 }

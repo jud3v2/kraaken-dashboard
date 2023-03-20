@@ -35,6 +35,8 @@ import {toast} from 'react-hot-toast';
 import { LoadingButton } from '@mui/lab';
 import {Category} from '../../types/category';
 import {Option} from '../../types/option';
+import {useNavigate} from 'react-router-dom'
+
   // ----------------------------------------------------------------------
   
   function descendingComparator(a: any, b: any, orderBy: any) {
@@ -85,7 +87,7 @@ const TABLE_HEAD = [
   
 
 export function ProductOption(props: Props) {
-    const [open, setOpen] = useState(null);
+  const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
 
@@ -104,7 +106,7 @@ export function ProductOption(props: Props) {
   const [currentUUID, setCurrentUUID] = useState<string>('');
 
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
-  
+
   const [option, setOption] = useState({
     name: '',
     description: '',
@@ -114,6 +116,8 @@ export function ProductOption(props: Props) {
     category: props.categoryUUID,
     product: props.productUUID,
   })
+  
+  const navigate = useNavigate();
 
   const [openUpdateModal, setOpenUpdateModal] = useState<boolean>(false);
   
@@ -325,7 +329,6 @@ export function ProductOption(props: Props) {
       }
     })
   // CREATE SECTION
-    
 
     return (<>
         <Card  sx={{width: '100%'}}>
@@ -459,7 +462,7 @@ export function ProductOption(props: Props) {
         Modifier
       </MenuItem>
 
-      <MenuItem >
+      <MenuItem onClick={() => navigate('/dashboard/option/images/' + currentUUID)}>
         <Iconify icon={'eva:image-outline'} sx={{ mr: 2 }} />
         Images
       </MenuItem>

@@ -83,7 +83,10 @@ export const api = {
         .catch((err) => {return err})
     },
 
-    optionGetOne: async (uuid: string) => {
+    optionGetOne: async (uuid: string | undefined) => {
+        if (uuid === undefined) return new Promise((resolve, reject) => {
+            reject("Missing data")
+        })
         return await axios.get(`option/${uuid}`)
         .then(({data}) => {return data})
         .catch((err) => {return err})
@@ -115,7 +118,13 @@ export const api = {
     // USER API
 
     // IMAGE API
-    imageCreate: async (data: any, uuid: string) => {
+    imageCreate: async (data: any, uuid: string|undefined) => {
+        if(uuid === undefined) {
+            return new Promise((reject) => {
+                reject("Missing data")
+            })
+        }
+
         return await axios.post(`product-image-create/${uuid}`, data)
         .then(({data}) => {return data})
         .catch((err) => {return err})

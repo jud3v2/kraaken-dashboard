@@ -20,9 +20,13 @@ import { toast } from 'react-hot-toast';
 import {ProductOption} from "../components/product-option";
 import {Category} from "../types/category";
 import ImageComponent from "../components/image";
+
 // ----------------------------------------------------------------------
 
 export default function CategoryPage() {
+  
+  
+
   const [product, setProduct] = useState({
     name: '',
     quantity: '',
@@ -87,7 +91,8 @@ export default function CategoryPage() {
       setCategoriesList(categoriesData)
     }
   }, [productData, categoriesData])
-
+  
+  
   const handleChange = (event: any) => {
     setProduct(prevState => ({...prevState, [event.target.name]: event.target.value}))
   }

@@ -13,6 +13,7 @@ import DashboardAppPage from './pages/DashboardAppPage';
 import CategoryPage from './pages/CategoryPage';
 import OrderPage from './pages/OrderPage';
 import ProductUpdatePage from './pages/ProductUpdatePage';
+import OptionPage from './pages/OptionPage';
 
 // ----------------------------------------------------------------------
 
@@ -43,6 +44,7 @@ export default function Router() {
     <Route path="/dashboard/products" element={Layout(DashboardLayout, ProductsPage)} />
     <Route path="/dashboard/register" element={Layout(DashboardLayout, RegisterPage)} />
     <Route path="/dashboard/product/:uuid" element={Layout(DashboardLayout, ProductUpdatePage)} />
+    <Route path="/dashboard/option/images/:uuid" element={Layout(DashboardLayout, OptionPage)} />
     <Route path="/404" element={<Page404/>} />
     <Route path="/dashboard/order" element={Layout(DashboardLayout, OrderPage)} />
     <Route path="/dashboard/categories" element={Layout(DashboardLayout, CategoryPage)} />
