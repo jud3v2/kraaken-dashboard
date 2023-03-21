@@ -300,7 +300,7 @@ export default function CategoryPage() {
   return (
     <>
       <Helmet>
-        <title> Commande | Lizaora </title>
+        <title> Tags | Lizaora </title>
       </Helmet>
 
       {isLoading ? <Stack sx={{width: '100%'}} justifyContent='center' justifyItems='center'>
@@ -314,10 +314,10 @@ export default function CategoryPage() {
       </Stack> : <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Gestion des commande
+            Gestion des tags
           </Typography>
           <Button variant="contained" onClick={toggleCreateModal} startIcon={<Iconify icon="eva:plus-fill" />}>
-            Ajouter une commande
+            Ajouter un tag
           </Button>
         </Stack>
 

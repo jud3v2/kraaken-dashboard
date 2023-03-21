@@ -172,7 +172,7 @@ export default function OptionPage(props: any) {
       }} />
       </Stack> : <>
       <Helmet>
-          <title> Lizaora | Option </title>
+          <title> Option | Lizaora </title>
       </Helmet>
 
       <Container>

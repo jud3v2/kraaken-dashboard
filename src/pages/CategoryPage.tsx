@@ -251,7 +251,7 @@ export default function CategoryPage() {
   return (
     <>
       <Helmet>
-        <title> Categories | Lizaora </title>
+        <title> Catégories | Lizaora </title>
       </Helmet>
 
       {isLoading ? <Stack sx={{width: '100%'}} justifyContent='center' justifyItems='center'>

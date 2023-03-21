@@ -106,7 +106,7 @@ export default function CategoryPage() {
   return (
     <>
       <Helmet>
-        <title> Produits | Lizaora </title>
+        <title> Produits màj | Lizaora </title>
       </Helmet>
 
       {isLoading 

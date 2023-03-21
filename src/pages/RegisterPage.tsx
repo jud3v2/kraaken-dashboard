@@ -45,7 +45,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | Dashboard Lizaora </title>
+        <title> Register | Lizaora </title>
       </Helmet>
 
       <StyledRoot>
