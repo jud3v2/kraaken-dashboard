@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@builder.io/qwik": "^0.22.0",
-    "@builder.io/qwik-city": "^0.6.2",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@faker-js/faker": "^7.6.0",
