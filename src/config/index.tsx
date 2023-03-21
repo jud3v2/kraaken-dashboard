@@ -1,3 +1,3 @@
 export const config = {
-    apiURL: 'https://api.lizaora.fr',
+    apiURL: 'https://api.lizaora.fr/',
 }
