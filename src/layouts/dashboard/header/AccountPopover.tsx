@@ -5,6 +5,7 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover,
 // mocks_
 import account from '../../../_mock/account';
 import toast from 'react-hot-toast';
+import {useNavigate} from 'react-router-dom'
 
 // ----------------------------------------------------------------------
 
@@ -12,20 +13,32 @@ const MENU_OPTIONS = [
   {
     label: 'Accueil',
     icon: 'eva:home-fill',
+    url: '/',
+    external: false
   },
   {
     label: 'Profil',
     icon: 'eva:person-fill',
+    url: '/',
+    external: false
   },
   {
     label: 'Paramètres',
     icon: 'eva:settings-2-fill',
+    url: '/',
+    external: false
   },
+  {
+    label: 'Documentation',
+    icon: '',
+    url: 'https://docs.lizaora.fr',
+    external: true
+  }
 ];
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
+export default function AccountPopover({user}: {user:any}) {
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event: any) => {
@@ -42,6 +55,8 @@ export default function AccountPopover() {
   const handleClose = () => {
     setOpen(null);
   };
+
+  const navigate = useNavigate()
 
   const styles: SxProps = {
     p: 0,
@@ -83,10 +98,12 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user?.name.charAt(0).toUpperCase() + user?.name.slice(1) || account.displayName}
+            {' '}
+            {user?.forename.charAt(0).toUpperCase() + user?.forename.slice(1) || ''}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user?.email || ''}
           </Typography>
         </Box>
 
@@ -94,7 +111,14 @@ export default function AccountPopover() {
 
         <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
-            <MenuItem key={option.label} onClick={handleClose}>
+            <MenuItem key={option.label} onClick={() => {
+              handleClose()
+              if(option?.external) {
+                window.open(option.url, '_blank')
+              } else {
+                navigate(option.url)
+              }
+              }}>
               {option.label}
             </MenuItem>
           ))}

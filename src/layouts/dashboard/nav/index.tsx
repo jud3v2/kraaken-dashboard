@@ -34,7 +34,7 @@ Nav.propTypes = {
   onCloseNav: PropTypes.func,
 };
 
-export default function Nav({ openNav, onCloseNav }: {openNav: any, onCloseNav: any}) {
+export default function Nav({ openNav, onCloseNav, user }: {openNav: any, onCloseNav: any, user: any}) {
   const { pathname } = useLocation();
 
   const isDesktop = useResponsive('up', 'lg');
@@ -64,11 +64,13 @@ export default function Nav({ openNav, onCloseNav }: {openNav: any, onCloseNav: 
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {account.displayName}
+                {user?.name.charAt(0).toUpperCase() + user?.name.slice(1) || account.displayName}
+                {' '}
+                {user?.forename.charAt(0).toUpperCase() + user?.forename.slice(1) || ''}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                ADMIN
+                Administrateur
               </Typography>
             </Box>
           </StyledAccount>

@@ -4,7 +4,9 @@ import { styled } from '@mui/material/styles';
 //
 import Header from './header';
 import Nav from './nav';
-
+import {useQuery} from "react-query"
+import jwtDecode from 'jwt-decode';
+import {api} from '../../api'
 // ----------------------------------------------------------------------
 
 const APP_BAR_MOBILE = 64;
@@ -33,12 +35,17 @@ const Main = styled('div')(({ theme }: {theme: any}) => ({
 
 export default function DashboardLayout({children}: {children: any}) {
   const [open, setOpen] = useState(false);
-  
+  const decodedToken: any = jwtDecode(localStorage.getItem("token") || "");
+
+  const { data } = useQuery(["user", decodedToken.uuid], () => {
+    return api.getUser(decodedToken.uuid);
+  });
+
   return (
     <StyledRoot>
-      <Header onOpenNav={() => setOpen(true)} />
+      <Header user={data} onOpenNav={() => setOpen(true)} />
 
-      <Nav openNav={open} onCloseNav={() => setOpen(false)} />
+      <Nav user={data} openNav={open} onCloseNav={() => setOpen(false)} />
 
       <Main>
         {children}
