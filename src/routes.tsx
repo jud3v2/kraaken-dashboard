@@ -49,6 +49,7 @@ export default function Router() {
     <Route path="/dashboard/order" element={Layout(DashboardLayout, OrderPage)} />
     <Route path="/dashboard/categories" element={Layout(DashboardLayout, CategoryPage)} />
     <Route path="/login" element={<LoginPage/>} />
+    <Route path="/defaultsite" element={<Navigate to="/" />} />
     <Route path="*" element={<Navigate to="/404" />} />
   </Routes>;
 }
