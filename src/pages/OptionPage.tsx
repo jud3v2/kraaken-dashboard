@@ -26,9 +26,8 @@ import { Helmet } from 'react-helmet-async';
 
 import { Option } from '../types/option'
 
-import { ClimbingBoxLoader } from 'react-spinners';
-
 import { useParams } from 'react-router-dom';
+import PageLoader from '../components/loader'
 
 export default function OptionPage(props: any) {
     const { uuid } = useParams<{uuid: string}>();
@@ -162,15 +161,7 @@ export default function OptionPage(props: any) {
     return (
         
         <>
-            {optionLoading ? <Stack sx={{width: '100%'}} justifyContent='center' justifyItems='center'>
-        <ClimbingBoxLoader  cssOverride={{
-          display: 'flex',
-          justifyContent: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          marginTop: '20%',
-      }} />
-      </Stack> : <>
+            {optionLoading ? <PageLoader /> : <>
       <Helmet>
           <title> Option | Lizaora </title>
       </Helmet>

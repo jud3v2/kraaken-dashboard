@@ -15,7 +15,7 @@ import {
 // components
 import { LoadingButton} from '@mui/lab';
 import {useQuery, useMutation, useQueryClient} from 'react-query';
-import { ClimbingBoxLoader  } from 'react-spinners';
+import PageLoader from '../components/loader'
 import { toast } from 'react-hot-toast';
 import {ProductOption} from "../components/product-option";
 import {Category} from "../types/category";
@@ -110,15 +110,7 @@ export default function CategoryPage() {
       </Helmet>
 
       {isLoading 
-      ? <Stack sx={{width: '100%'}} justifyContent='center' justifyItems='center'>
-        <ClimbingBoxLoader  cssOverride={{
-          display: 'flex',
-          justifyContent: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          marginTop: '20%',
-      }} />
-      </Stack> 
+      ? <PageLoader />
       : <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>

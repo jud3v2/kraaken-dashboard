@@ -2,7 +2,6 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState } from 'react';
 import {api} from '../api';
-import { ClimbingBoxLoader  } from 'react-spinners';
 
 // @mui
 import {
@@ -41,6 +40,7 @@ import {toast} from 'react-hot-toast'
 import {LoadingButton} from '@mui/lab'
 import { CreateProduct } from '../types/product'
 import { Category } from '../types/category'
+import PageLoader from '../components/loader'
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
@@ -290,15 +290,7 @@ export default function CategoryPage() {
         <title> Commande | Lizaora </title>
       </Helmet>
 
-      {isLoading ? <Stack sx={{width: '100%'}} justifyContent='center' justifyItems='center'>
-        <ClimbingBoxLoader  cssOverride={{
-          display: 'flex',
-          justifyContent: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          marginTop: '20%',
-      }} />
-      </Stack> : <Container>
+      {isLoading ? <PageLoader /> : <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Gestion des commandes

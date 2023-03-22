@@ -80,7 +80,8 @@ const TABLE_HEAD = [
     { id: 'name', label: 'Nom', alignRight: false },
     { id: 'uuid', label: 'Identifiant', alignRight: false },
     { id: 'description', label: 'Description', alignRight: false },
-    { id: 'price', label: 'Quantité', alignRight: false },
+    { id: 'price', label: 'Prix', alignRight: false },
+    { id: 'quantity', label: 'Quantité', alignRight: false },
     { id: 'status', label: 'Status', alignRight: false },
     { id: '' },
   ];
@@ -363,6 +364,7 @@ export function ProductOption(props: Props) {
                     const isDeleted: boolean = row.isDeleted;
                     const description: string = row.description;
                     const quantity: number = row.quantity;
+                    const price: number = row.price;
 
 
                     return (
@@ -381,6 +383,7 @@ export function ProductOption(props: Props) {
 
                         <TableCell align="left">{description.substring(0, 20)}</TableCell>
 
+                        <TableCell align="left">{price} €</TableCell>
                         <TableCell align="left">{quantity}</TableCell>
 
                         <TableCell align="left">

@@ -2,8 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useState } from 'react';
 import {api} from '../api';
-import { ClimbingBoxLoader  } from 'react-spinners';
-
+import PageLoader from '../components/loader'
 // @mui
 import {
   Card,
@@ -303,15 +302,7 @@ export default function CategoryPage() {
         <title> Produits | Lizaora </title>
       </Helmet>
 
-      {isLoading ? <Stack sx={{width: '100%'}} justifyContent='center' justifyItems='center'>
-        <ClimbingBoxLoader  cssOverride={{
-          display: 'flex',
-          justifyContent: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          marginTop: '20%',
-      }} />
-      </Stack> : <Container>
+      {isLoading ? <PageLoader /> : <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
             Gestion des produits
@@ -386,7 +377,7 @@ export default function CategoryPage() {
                         <TableCell component="th" scope="row" padding="normal">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
-                              {price}
+                              {price} €
                             </Typography>
                           </Stack>
                         </TableCell>

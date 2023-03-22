@@ -1,16 +1,16 @@
 import React from 'react';
-import { Order } from '../../types/order'
 import { Box, Stack, Typography, Divider, Grid, Card } from '@mui/material'
-import { ProductOrder } from '../../types/productOrdered.js';
 import Label from '../../components/label';
 import dayjs from 'dayjs';
+import ProductRecap from '../../components/product/ProductRecap'
 
 export default function Recap({ data }: { data: any }) {
-    console.log(data)
+
     const style = {
         p: 3,
         m: 1
     }
+
     return (
         <Box>
             <Stack>
@@ -18,35 +18,26 @@ export default function Recap({ data }: { data: any }) {
                     <Typography variant='h4'>
                         Récapitulatif {data.order.uuid.substring(0, 8)} - {dayjs(data.order.createdAt).format('DD/MM/YYYY')}
                         - {data.order.productOrder?.length} {data.order.productOrder?.length > 1 ? 'produits' : 'produit'}
-                    </Typography>
-                    <Divider sx={{my: 2}} />
-                    <Stack sx={{ my: 2 }}>
-                        <Typography variant='h6'>
-                            Aperçu rapide de la commande
-                        </Typography>
-                    </Stack>
-                    <Card sx={style}>
                         <Stack sx={{
                             display: 'flex',
                             flexDirection: 'row',
-                            justifyContent: 'space-around',
                             alignItems: 'center',
                         }}>
-                            <Typography variant='subtitle1'>
+                        <Typography variant='subtitle1'>
                                 {data.order.isDelivered ? <Label color='success'>Commande En livraison</Label> : <Label color='warning'>Commande en retrait</Label>}
                             </Typography>
-                            <Typography variant='subtitle1' sx={{ mt: 1 }}>
+                            <Typography variant='subtitle1' sx={{mx: 1}}>
                                 {data.order.status === 'new' ? <Label color='primary'>Nouvelle commande</Label> : <></>}
-                                {data.order.status === 'paid' ? <Label color='warning'>Commande payer</Label> : <></>}
+                                {data.order.status === 'paid' ? <Label color='warning'>Commande à été payer</Label> : <></>}
                                 {data.order.status === 'canceled' ? <Label color='error'>Commande annuler</Label> : <></>}
                                 {data.order.status === 'preparation' ? <Label color='success'>Commande en préparation</Label> : <></>}
                                 {data.order.status === 'delivered' ? <Label color='success'>Commande livré</Label> : <></>}
                             </Typography>
-                            <Typography variant='subtitle1' sx={{ mt: 1 }}>
+                            <Typography variant='subtitle1'>
                                 {data.order.isDeleted ? <Label color='error'>Inactif</Label> : <Label color="success">Actif</Label>}
                             </Typography>
                         </Stack>
-                    </Card>
+                    </Typography>
                 </Card>
             </Stack>
             <Divider sx={{ my: 2 }} />
@@ -216,15 +207,11 @@ export default function Recap({ data }: { data: any }) {
                 <Typography variant='h4'>
                     Récapitulatif de
                     {' '} {data.order.productOrder?.length} {data.order.productOrder?.length > 1 ? 'produits' : 'produit'}
+                    {' '} commandé(s)
                 </Typography>
             </Stack>
             <Stack sx={{ my: 2 }}>
-                <Typography variant='subtitle1'>
-                    Product
-                </Typography>
-                {data.product_ordered.products?.map((product: any, index: number) => (
-                    console.log(product)
-                ))}
+                {data.order.productOrder?.map((data: any, index: number) => <ProductRecap key={index} quantity={data.quantity} uuid={data.product_uuid || data.option_uuid} />)}
             </Stack>
         </Box>
     )
