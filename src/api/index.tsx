@@ -189,7 +189,7 @@ export const api = {
                 reject("Missing data")
             }
 
-            return await axios.get('order/' + uuid + '/products')
+            return await axios.get('order/' + uuid)
             .then(({data}) => resolve(data))
             .catch((err) => reject(err))
         })

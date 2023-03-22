@@ -12,6 +12,7 @@ import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
 import CategoryPage from './pages/CategoryPage';
 import OrderPage from './pages/OrderPage';
+import OrderInfoPage from './pages/OrderInfoPage';
 import ProductUpdatePage from './pages/ProductUpdatePage';
 import OptionPage from './pages/OptionPage';
 import TagsPage from './pages/TagsPage';
@@ -46,6 +47,7 @@ export default function Router() {
     <Route path="/dashboard/register" element={Layout(DashboardLayout, RegisterPage)} />
     <Route path="/dashboard/tags" element={Layout(DashboardLayout, TagsPage)} />
     <Route path="/dashboard/product/:uuid" element={Layout(DashboardLayout, ProductUpdatePage)} />
+    <Route path="/dashboard/order/:uuid" element={Layout(DashboardLayout, OrderInfoPage)} />
     <Route path="/dashboard/option/images/:uuid" element={Layout(DashboardLayout, OptionPage)} />
     <Route path="/404" element={<Page404/>} />
     <Route path="/dashboard/order" element={Layout(DashboardLayout, OrderPage)} />

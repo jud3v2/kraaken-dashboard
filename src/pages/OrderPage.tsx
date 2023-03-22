@@ -45,11 +45,12 @@ import { Category } from '../types/category'
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Nom', alignRight: false },
+  { id: 'forename', label: 'Prénom', alignRight: false },
   { id: 'uuid', label: 'Identifiant', alignRight: false },
   { id: 'isDeleted', label: 'Actif', alignRight: false },
-  { id: 'quantity', label: 'Quantité', alignRight: false },
+  { id: 'isDelivered', label: 'Livraison', alignRight: false },
   { id: 'price', label: 'Prix', alignRight: false },
-  { id: 'description', label: 'Description', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
   { id: '' },
 ];
 
@@ -118,15 +119,15 @@ export default function CategoryPage() {
 
   // API CALL --------------------------
 
-  const queryKey = ['products'];
-  const {isLoading, data} = useQuery(queryKey, () => api.getProducts(), {
+  const queryKey = ['orders'];
+  const {isLoading, data} = useQuery(queryKey, () => api.orderGetAll(), {
     staleTime: 60_000,
-    cacheTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 2,
   })
 
   const {data: categories} = useQuery(["categories"], async () => await api.categoryAll(), {
     staleTime: 60_000,
-    cacheTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 2,
   })
 
   const {isSuccess, error, mutate} = useMutation([[queryKey, currentUUID]], async () => {
@@ -167,10 +168,8 @@ export default function CategoryPage() {
 
   // ------------------------------
 
-  const products = data || [];
+  const orders: any = data || []
   const categoriesData = categories || [];
-
-
 
   const handleOpenMenu = (event: any, uuid: string) => {
     setCurrentUUID(uuid)
@@ -187,29 +186,6 @@ export default function CategoryPage() {
     setOrderBy(property);
   };
 
-  const handleSelectAllClick = (event: any) => {
-    if (event.target.checked) {
-      const newSelecteds = products.map((n: any) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event: any, name: never) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: any = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
 
   const handleChangePage = (event: any, newPage: number) => {
     event.preventDefault();
@@ -235,7 +211,7 @@ export default function CategoryPage() {
 
   const moveToUpdatePage = async (event: any, uuid: string) => {
     event.preventDefault();
-    navigate(`/dashboard/product/${uuid}`)
+    navigate(`/dashboard/order/${uuid}`)
   }
 
   const handleDelete = async (event: any, uuid: string) => {
@@ -291,11 +267,22 @@ export default function CategoryPage() {
   }
 
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - products.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders?.length) : 0;
 
-  const filteredUsers = applySortFilter(products, getComparator(order, orderBy), filterName);
+  const filteredUsers = applySortFilter(orders, getComparator(order, orderBy), filterName);
 
   const isNotFound = !filteredUsers.length && !!filterName;
+
+  const parseStatus = (status: string) => {
+    switch (status) {
+      case 'new': return 'Nouveau';
+      case 'paid': return 'Payé';
+      case 'preparation': return 'Préparation';
+      case 'delivered': return 'Livré';
+      case 'canceled': return 'Annuler';
+      default: return '';
+    }
+  }
 
   return (
     <>
@@ -314,7 +301,7 @@ export default function CategoryPage() {
       </Stack> : <Container>
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
-            Gestion des commande
+            Gestion des commandes
           </Typography>
           <Button variant="contained" onClick={toggleCreateModal} startIcon={<Iconify icon="eva:plus-fill" />}>
             Ajouter une commande
@@ -331,34 +318,40 @@ export default function CategoryPage() {
                   order={order}
                   orderBy={orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={products.length}
+                  rowCount={orders.length}
                   numSelected={selected.length}
                   onRequestSort={handleRequestSort}
-                  onSelectAllClick={handleSelectAllClick}
+                  hasCheckbox={false}
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: any) => {
                     type rowProps = {
                       uuid: string,
                       name: never,
+                      forename: never,
                       isDeleted: boolean,
-                      quantity: number,
-                      description: string,
+                      isDelivered: number,
+                      status: string,
                       price: number
                     }
-                    const { uuid, name, isDeleted, quantity, description, price }: rowProps = row;
-                    const selectedUser = selected.indexOf(name) !== -1;
+                    const { uuid, name, isDeleted, isDelivered, forename, price, status }: rowProps = row;
 
                     return (
-                      <TableRow hover key={uuid} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover key={uuid} tabIndex={-1} >
                         <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
-
                         <TableCell component="th" scope="row" padding="normal">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
                               {name}
+                            </Typography>
+                          </Stack>
+                        </TableCell>
+                        
+                        <TableCell component="th" scope="row" padding="normal">
+                          <Stack direction="row" alignItems="center" spacing={2}>
+                            <Typography variant="subtitle2" noWrap>
+                              {forename}
                             </Typography>
                           </Stack>
                         </TableCell>
@@ -378,7 +371,7 @@ export default function CategoryPage() {
                         <TableCell component="th" scope="row" padding="normal">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
-                              {quantity}
+                              {isDelivered ? 'Livraison' : 'Retrait'}
                             </Typography>
                           </Stack>
                         </TableCell>
@@ -394,7 +387,7 @@ export default function CategoryPage() {
                         <TableCell component="th" scope="row" padding="normal">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Typography variant="subtitle2" noWrap>
-                              {description.substring(0, 20)}
+                              {parseStatus(status)}
                             </Typography>
                           </Stack>
                         </TableCell>
@@ -446,7 +439,7 @@ export default function CategoryPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={products.length}
+            count={orders.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
