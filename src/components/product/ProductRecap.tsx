@@ -35,8 +35,8 @@ export default function ProductRecap(props: React.PropsWithChildren<any>) {
                     alignItems: 'center',
                     p:2
                 }}>
-                    {productImage.map((image: any) => {
-                        return <Box sx={{mx: 1, width: '140px', height: '140px'}}>
+                    {productImage.map((image: any, index: number) => {
+                        return <Box key={index} sx={{mx: 1, width: '140px', height: '140px'}}>
                             <CardMedia sx={{maxWidth: '100%', maxHeight: '100%', borderRadius: 2}} component='img' src={api.imageGet(image.path)}/>
                         </Box>
                     })}

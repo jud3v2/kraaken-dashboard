@@ -37,10 +37,7 @@ export default function CategoryPage() {
 
   const queryKey = ['orders', uuid];
 
-  const {isLoading, data} = useQuery(queryKey, () => api.orderGetOne(uuid), {
-    staleTime: 60_000,
-    cacheTime: 1000 * 60 * 2,
-  })
+  const {isLoading, data} = useQuery(queryKey, () => api.orderGetOne(uuid))
 
   const [value, setValue] = useState('1');
 
@@ -71,28 +68,24 @@ export default function CategoryPage() {
                     <TabList onChange={handleChange} aria-label="lab API tabs example">
                       <Tab label="Récapitulatif" value="1" />
                       <Tab label="Modifier la commande" value="2" />
-                      <Tab label="Modifier la livraison" value="3" />
-                      <Tab label="Modifier le statut" value="4" />
-                      <Tab label="Modifier les produits" value="5" />
-                      <Tab label="Autres" value="6" />
+                      <Tab label="Modifier le statut" value="3" />
+                      <Tab label="Modifier les produits" value="4" />
+                      <Tab label="Autres" value="5" />
                     </TabList>
                   </Box>
                   <TabPanel value="1">
                     <Recap data={data} />
                   </TabPanel>
                   <TabPanel value="2">
-                    <UpdateOrder />
+                    <UpdateOrder data={data}/>
                   </TabPanel>
                   <TabPanel value="3">
-                    <UpdateShipping />
+                    <UpdateStatus data={data} />
                   </TabPanel>
                   <TabPanel value="4">
-                    <UpdateStatus />
-                  </TabPanel>
-                  <TabPanel value="5">
                     <UpdateProduct />
                   </TabPanel>
-                  <TabPanel value="6">
+                  <TabPanel value="5">
                     <Other />
                   </TabPanel>
                 </TabContext>

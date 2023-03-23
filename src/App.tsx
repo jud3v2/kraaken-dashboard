@@ -1,3 +1,4 @@
+import React from 'react'
 import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 
@@ -20,17 +21,19 @@ export default function App() {
 
   return (
       <QueryClientProvider client={queryClient}>
-        <HelmetProvider>
-        <BrowserRouter>
-          <ThemeProvider>
-            <ScrollToTop />
-            <StyledChart />
-            <Toaster />
-            <Router />
-            <ReactQueryDevtools initialIsOpen={false} />
-          </ThemeProvider>
-        </BrowserRouter>
-      </HelmetProvider>
+        <React.StrictMode>
+          <HelmetProvider>
+          <BrowserRouter>
+            <ThemeProvider>
+              <ScrollToTop />
+              <StyledChart />
+              <Toaster />
+              <Router />
+              <ReactQueryDevtools initialIsOpen={false} />
+            </ThemeProvider>
+          </BrowserRouter>
+        </HelmetProvider>
+        </React.StrictMode>
       </QueryClientProvider> 
   );
 }

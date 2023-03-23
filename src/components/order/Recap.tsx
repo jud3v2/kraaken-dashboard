@@ -18,6 +18,7 @@ export default function Recap({ data }: { data: any }) {
                     <Typography variant='h4'>
                         Récapitulatif {data.order.uuid.substring(0, 8)} - {dayjs(data.order.createdAt).format('DD/MM/YYYY')}
                         - {data.order.productOrder?.length} {data.order.productOrder?.length > 1 ? 'produits' : 'produit'}
+                        <Divider sx={{my: 2 }}/>
                         <Stack sx={{
                             display: 'flex',
                             flexDirection: 'row',
@@ -27,7 +28,8 @@ export default function Recap({ data }: { data: any }) {
                                 {data.order.isDelivered ? <Label color='success'>Commande En livraison</Label> : <Label color='warning'>Commande en retrait</Label>}
                             </Typography>
                             <Typography variant='subtitle1' sx={{mx: 1}}>
-                                {data.order.status === 'new' ? <Label color='primary'>Nouvelle commande</Label> : <></>}
+                                {data.order.status === 'new' ? <Label color='primary'>En attente</Label> : <></>}
+                                {data.order.status === 'isDelivery' ? <Label color='primary'>En cours de livraison</Label> : <></>}
                                 {data.order.status === 'paid' ? <Label color='warning'>Commande à été payer</Label> : <></>}
                                 {data.order.status === 'canceled' ? <Label color='error'>Commande annuler</Label> : <></>}
                                 {data.order.status === 'preparation' ? <Label color='success'>Commande en préparation</Label> : <></>}
@@ -105,7 +107,7 @@ export default function Recap({ data }: { data: any }) {
                             <Divider sx={{my: 2}}/>
                             <Stack sx={{ mt: 2 }}>
                                 <Typography variant='subtitle1'>
-                                    Adresse: {' '} {data.order.deliveryAdress ? data.order.deliveryAdress : 'N/C'}
+                                    Adresse: {' '} {data.order.deliveryAddress ? data.order.deliveryAddress : 'N/C'}
                                 </Typography>
                                 <Typography variant='subtitle1'>
                                     Ville: {' '} {data.order.deliveryCity ? data.order.deliveryCity : 'N/C'}
@@ -157,16 +159,20 @@ export default function Recap({ data }: { data: any }) {
                             <Divider sx={{my: 2}}/>
                             <Stack sx={{ mt: 1 }}>
                                 <Typography variant='subtitle1'>
-                                    Numéro de suivi: {' '} {data.order.deliveryToken ? data.order.deliveryToken : 'N/C'}
+                                    Numéro de suivi: {' '} {data.order.deliveryToken ? <Label color='primary'>
+                                        {data.order.deliveryToken}
+                                    </Label> : 'N/C'}
                                 </Typography>
                                 <Typography variant='subtitle1'>
                                     Commentaire de livraison: {' '} {data.order.deliveryComment ? data.order.deliveryComment : 'N/C'}
                                 </Typography>
                                 <Typography variant='subtitle1'>
-                                    Prix de livraison: {' '} {data.order.deliveryPrice ? data.order.deliveryPrice : 'N/C'}
+                                    Prix de livraison: {' '} {data.order.deliveryPrice || data.order.deliveryPrice === 0 ? data.order.deliveryPrice : 'N/C'}{' '}€
                                 </Typography>
                                 <Typography variant='subtitle1'>
-                                    Date de livraison: {' '} {data.order.deliveryDate ? data.order.deliveryDate : 'N/C'}
+                                    Date de livraison: {' '} {data.order.deliveryDate ? <Label color='success'>
+                                        {dayjs(data.order.deliveryDate).format("ddd, MMM D, YYYY")}
+                                    </Label> : 'N/C'}
                                 </Typography>
                             </Stack>
                         </div>
