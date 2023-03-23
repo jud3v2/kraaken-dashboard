@@ -1,12 +1,11 @@
 import React from 'react'
-import {useQuery, useQueryClient} from "react-query";
+import {useQuery} from "react-query";
 import {api} from '../../api'
 import {Box, CardMedia, Typography, Card} from '@mui/material'
 
 export default function ProductRecap(props: React.PropsWithChildren<any>) {
 
     const uuid = props.uuid || '';
-    const queryClient = useQueryClient();
     const {data, isLoading, error} = useQuery(['product', uuid], () => api.getOneProduct(uuid), {
         cacheTime: 0,
         staleTime: 0,
@@ -18,6 +17,7 @@ export default function ProductRecap(props: React.PropsWithChildren<any>) {
         if((image.option_uuid || image.product_uuid) === data.uuid){
             productImage.push(image)
         }
+        return image
     })
 
     if(isLoading) return <Typography>Loading...</Typography>

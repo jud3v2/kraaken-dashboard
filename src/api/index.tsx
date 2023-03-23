@@ -219,25 +219,25 @@ export const api = {
         })
     },
 
-    orderPushProduct: async (data: any, uuid: string|undefined, productUUID: string|undefined) => {
+    orderPushProduct: async (data: any, uuid: string|undefined) => {
         return new Promise(async (resolve, reject) => {
-            if(uuid === undefined || productUUID === undefined) {
+            if(uuid === undefined) {
                 reject("Missing data")
             }
 
-            return await axios.post(`order-add-product/${uuid}/${productUUID}`, data)
+            return await axios.post(`order-add-product/${uuid}`, data)
             .then(({data}) => resolve(data))
             .catch((err) => reject(err))
         })
     },
 
-    orderDeleteProduct: async (data: any, uuid: string | undefined, productUUID: string | undefined) => {
+    orderDeleteProduct: async (uuid: string | undefined, productUUID: string | undefined) => {
         return new Promise(async (resolve, reject) => {
             if(uuid === undefined || productUUID === undefined) {
                 reject("Missing data")
             }
 
-            return await axios.delete(`order-remove-product/${uuid}/${productUUID}`, data)
+            return await axios.delete(`order-remove-product/${uuid}/${productUUID}`)
             .then(({data}) => resolve(data))
             .catch((err) => reject(err))
         })

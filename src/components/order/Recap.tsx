@@ -16,7 +16,7 @@ export default function Recap({ data }: { data: any }) {
             <Stack>
                 <Card sx={style}>
                     <Typography variant='h4'>
-                        Récapitulatif {data.order.uuid.substring(0, 8)} - {dayjs(data.order.createdAt).format('DD/MM/YYYY')}
+                        Récapitulatif - {dayjs(data.order.createdAt).format('DD/MM/YYYY')}{' '}
                         - {data.order.productOrder?.length} {data.order.productOrder?.length > 1 ? 'produits' : 'produit'}
                         <Divider sx={{my: 2 }}/>
                         <Stack sx={{

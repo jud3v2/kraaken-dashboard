@@ -1,4 +1,5 @@
 import { Category } from './category';
+import { ProductOption } from './productOption';
 
 export type Product = {
     uuid: string;
@@ -12,6 +13,7 @@ export type Product = {
     isDeleted: boolean;
     createdAt: Date;
     updatedAt: Date;
+    productOption: ProductOption[];
 }
 
 export type CreateProduct = {

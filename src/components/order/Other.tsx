@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function Other() {
+export default function Other(props: any) {
     return (
         <div>
-            Other component
+            En cours de développement
         </div>
     )
 } 
