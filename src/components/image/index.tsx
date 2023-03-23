@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import React, {useState} from 'react'
 import {useQueryClient, useMutation} from 'react-query'
 import {Image} from '../../types/image';
 
@@ -151,9 +151,9 @@ export default function ImageComponent(props: {images: Image[], productUUID: str
             <Stack sx={{my: 3}}>
                 <Stack flexDirection={'row'} justifyContent={'space-around'} sx={{height: '10rem'}}>
                     {imagesProps.length > 0 ? imagesProps.map((image: Image, index: number) => (
-                        <>
+                        <React.Fragment key={index}>
                             {!image.isOption 
-                            ? <div key={index} className="image-item">
+                            ? <div className="image-item">
                         <Stack sx={{mx: 1, width: '140px', height: '140px'}}>
                             <CardMedia sx={{maxWidth: '100%', maxHeight: '100%', borderRadius: 2}} component='img' image={api.imageGet(image.path)}/>
                             <Stack flexDirection={'row'} sx={{my: 1}} justifyContent={'space-around'}>
@@ -164,7 +164,7 @@ export default function ImageComponent(props: {images: Image[], productUUID: str
                             </Stack>
                         </Stack>
                     </div> : <></>}
-                        </>
+                        </React.Fragment>
                     )) : <>
                         <Typography>
                             Aucune image n'a été ajouté pour le moment

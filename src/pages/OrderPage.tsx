@@ -11,7 +11,6 @@ import {
   Paper,
   Button,
   Popover,
-  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -24,7 +23,8 @@ import {
   Modal,
   Box,
   TextField,
-  Select
+  Select,
+  Divider
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -117,6 +117,13 @@ export default function CategoryPage() {
     big_description: '',
   })
 
+  const [newOrder, setNewOrder] = useState({
+    name: '',
+    forename: '',
+    email: '',
+    phoneNumber: '',
+  })
+
   // API CALL --------------------------
 
   const queryKey = ['orders'];
@@ -130,8 +137,17 @@ export default function CategoryPage() {
     cacheTime: 1000 * 60 * 2,
   })
 
-  const {isSuccess, error, mutate} = useMutation([[queryKey, currentUUID]], async () => {
-    await api.deleteProduct(currentUUID)
+  const {mutate} = useMutation([[queryKey, currentUUID]], async () => {
+    if(window.confirm('Voulez-vous vraiment supprimer cette commande ?')){
+      await api.orderDelete(currentUUID)
+      .then(() => {
+        queryClient.invalidateQueries(queryKey)
+        toast.success('Commande supprimée avec succès')
+      })
+      .catch(() => {
+        toast.error('Une erreur est survenue / Supprimé les produits commandés avant de supprimer la commande')
+      })
+    }
   }, {
     onSuccess: () => {
       queryClient.invalidateQueries(queryKey)
@@ -169,7 +185,6 @@ export default function CategoryPage() {
   // ------------------------------
 
   const orders: any = data || []
-  const categoriesData = categories || [];
 
   const handleOpenMenu = (event: any, uuid: string) => {
     setCurrentUUID(uuid)
@@ -217,55 +232,25 @@ export default function CategoryPage() {
   const handleDelete = async (event: any, uuid: string) => {
     event.preventDefault();
     mutate();
-    if(isSuccess) {
-      toast.success('Produit Actif/Inactif')
-    }
-
-    if(error) {
-      toast.error('Erreur lors de la désactivation du produit')
-    }
   }
 
-  const handleChangeInput = (e: any) => {
-    e.preventDefault();
-    setProduct((product: CreateProduct) => ({...product, [e.target.name]: e.target.value}))
-  }
-
-  const handleCreateProduct = (e: any) => {
-    e.preventDefault();
-    if(product.name === ''){
-      toast.error('Le nom du produit est obligatoire')
-      return
+  const {isLoading: orderCreateLoading, mutate: mutateCreateOrder} = useMutation( async () => {
+    const data = {
+      name: newOrder.name,
+      forename: newOrder.forename,
+      email: newOrder.email,
+      phoneNumber: newOrder.phoneNumber,
+      price: 0
     }
-    
-    if(product.description === ''){
-      toast.error('La description du produit est obligatoire')
-      return
-    }
-    
-    if(product.price === 0){
-      toast.error('Le prix du produit doit être supérieur à 0 par exemples 1.99')
-      return
-    }
-
-    if(product.quantity === 0){
-      toast.error('La quantité du produit doit être supérieur à 0')
-      return
-    }
-
-    if(product.category_uuid === ''){
-      toast.error('La catégorie du produit est obligatoire')
-      return
-    }
-
-    if(product.big_description === ''){
-      toast.error('La description longue du produit est obligatoire')
-      return
-    }
-
-    mutateCreate();
-  }
-
+    await api.orderCreate(data)
+    .then(() => {
+      queryClient.invalidateQueries(queryKey)
+      toast.success('Commande créée avec succès')
+    })
+    .catch(() => {
+      toast.error('Une erreur est survenue')
+    })
+  })
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - orders?.length) : 0;
 
@@ -280,8 +265,13 @@ export default function CategoryPage() {
       case 'preparation': return 'Préparation';
       case 'delivered': return 'Livré';
       case 'canceled': return 'Annuler';
+      case 'isDelivery': return 'En livraison';
       default: return '';
     }
+  }
+
+  const handleChange = (e: any) => {
+    setNewOrder((newOrder: any) => ({...newOrder, [e.target.name]: e.target.value}))
   }
 
   return (
@@ -487,51 +477,18 @@ export default function CategoryPage() {
            width: '80%',
         }}>
           <Stack spacing={2}>
-            <Typography variant='h4'>Création d'un nouveau produit</Typography>
+            <Typography variant='h4'>Création d'une nouvelle commande</Typography>
           </Stack>
-          <Stack spacing={2} sx={{
-            my: 2,
-          }}>
-            <Typography variant='h6'>Caractèristiques du produit</Typography>
-          </Stack>
-          <Stack spacing={2}  direction='row' justifyContent={'space-between'}>
-            <TextField name='name' value={product.name} type='text' required onChange={handleChangeInput} label="Nom de l'option" />
-            <TextField name='quantity' value={product.quantity} type='number' onChange={handleChangeInput} required label='Choisissez la quantité' />
-            <TextField name='price' value={product.price} type='number' onChange={handleChangeInput} required label='Choisissez le prix' />
-          </Stack>
-          <Stack spacing={2} sx={{
-            my: 2,
-          }}>
-            <Typography variant='h6'>Description du produit</Typography>
-          </Stack>
-          <Stack spacing={2}>
-            <TextField name='description' value={product.description} multiline onChange={handleChangeInput} rows={2} required label="Petite description" />
-            <TextField name='big_description' value={product.big_description} onChange={handleChangeInput} multiline rows={4} required label='Grande description' />
-          </Stack>
-          <Stack spacing={2} sx={{
-            my: 2,
-          }}>
-            <Typography variant='h6'>Catégorie affilié</Typography>
+          <Divider sx={{ my: 2 }} />
+          <Stack>
+            <TextField sx={{my: 1}} name='name' type='text' required onChange={handleChange} label='Nom du client' value={newOrder.name} />
+            <TextField sx={{my: 1}} name='forename' type='text' required onChange={handleChange} label='Prénom du client' value={newOrder.forename} />
+            <TextField sx={{my: 1}} name='email' type='text' required onChange={handleChange} label='Email du client' value={newOrder.email} />
+            <TextField sx={{my: 1}} name='phoneNumber' type='text' required onChange={handleChange} label='Numéro de téléphone du client' value={newOrder.phoneNumber} />
           </Stack>
           <Stack>
-            <Select
-              label="Séléctionner une catégorie"
-              name="category_uuid"
-              value={product.category_uuid}
-              onChange={handleChangeInput}
-            >
-              {categoriesData.map((category: Category) => {
-                return  <MenuItem key={category.uuid} value={category.uuid}>{category.name}</MenuItem>
-              })}
-            </Select>
-          </Stack>
-          <Stack spacing={2} sx={{
-            width: '100%',
-            my: 2
-          }}
-          >
-            <LoadingButton variant={'contained'} loading={isLoadingCreate} onClick={handleCreateProduct}>
-              Créé l'option
+            <LoadingButton loading={orderCreateLoading} onClick={() => mutateCreateOrder()}>
+              Créer la commande
             </LoadingButton>
           </Stack>
         </Box>
