@@ -8,7 +8,7 @@ import { ProductOrder } from '../../types/productOrdered';
 import { useMutation, useQueryClient } from 'react-query';
 import { toast } from 'react-hot-toast';
 
-export default function ProductCard({ product, data }: { product: any, data: any }) {
+export default function ProductCard({ product, data, showAction = true}: { product: any, data: any, showAction?: boolean }) {
 
     const [productOrder, setProductOrder] = React.useState<ProductOrder>()
     
@@ -122,21 +122,26 @@ export default function ProductCard({ product, data }: { product: any, data: any
                         <Typography variant='inherit' color='gray'>Quantité: {productOrder?.quantity}</Typography>
                     </Box>
                 </Stack>
-                <Divider sx={{ my: 2 }} />
-                <Stack sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                }}>
-                    <LoadingButton loading={isLoadingMinus} onClick={() => minusProductOrder()} variant='contained' sx={{ m: 1 }} color='primary'>
-                        <Iconify icon='ic:round-minus' />
-                    </LoadingButton>
-                    <LoadingButton loading={isLoadingDelete} onClick={() => deleteProductOrder()} variant='contained' sx={{ m: 1 }} color='error'>
-                        <Iconify icon='mdi:delete' />
-                    </LoadingButton>
-                    <LoadingButton loading={isLoadingPlus} onClick={() => plusProductOrder()} variant='contained' sx={{ m: 1 }} color='primary'>
-                        <Iconify icon='ic:round-plus' />
-                    </LoadingButton>
-                </Stack>
+                {showAction 
+                ? <>
+                    <Divider sx={{ my: 2 }} />
+                    <Stack sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                    }}>
+                        <LoadingButton loading={isLoadingMinus} onClick={() => minusProductOrder()} variant='contained' sx={{ m: 1 }} color='primary'>
+                            <Iconify icon='ic:round-minus' />
+                        </LoadingButton>
+                        <LoadingButton loading={isLoadingDelete} onClick={() => deleteProductOrder()} variant='contained' sx={{ m: 1 }} color='error'>
+                            <Iconify icon='mdi:delete' />
+                        </LoadingButton>
+                        <LoadingButton loading={isLoadingPlus} onClick={() => plusProductOrder()} variant='contained' sx={{ m: 1 }} color='primary'>
+                            <Iconify icon='ic:round-plus' />
+                        </LoadingButton>
+                    </Stack>
+                </> 
+                : <></>
+                }
             </Card>
 
         </>

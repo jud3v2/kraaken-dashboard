@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Stack, Typography, Divider, Grid, Card } from '@mui/material'
 import Label from '../../components/label';
 import dayjs from 'dayjs';
-import ProductRecap from '../../components/product/ProductRecap'
+import ProductCard from '../../components/product/ProductCard'
 
 export default function Recap({ data }: { data: any }) {
 
@@ -216,9 +216,26 @@ export default function Recap({ data }: { data: any }) {
                     {' '} commandé(s)
                 </Typography>
             </Stack>
-            <Stack sx={{ my: 2 }}>
-                {data.order.productOrder?.map((data: any, index: number) => <ProductRecap key={index} quantity={data.quantity} uuid={data.product_uuid || data.option_uuid} />)}
+            <Stack sx={{my: 2}}>
+                <Typography variant="h6" gutterBottom>
+                Produits Commandés
+                </Typography>
             </Stack>
+            <Grid container mb={5}>
+                {data.product_ordered.products.map((product: any, index: number) => <Grid xs={4} key={index}>
+                <ProductCard showAction={false} data={data} key={index} product={product} />
+                </Grid>)}
+            </Grid>
+            <Stack>
+                <Typography variant="h6" gutterBottom>
+                Options Commandés
+                </Typography>
+            </Stack>
+            <Grid container mb={5}>
+                {data.product_ordered.options.map((product: any, index: number) => <Grid xs={4} key={index}>
+                <ProductCard data={data} showAction={false} key={index} product={product} />
+                </Grid>)}
+            </Grid>
         </Box>
     )
 } 
