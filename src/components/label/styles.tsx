@@ -5,6 +5,8 @@ import { Box } from '@mui/material';
 // ----------------------------------------------------------------------
 type Props = {
   theme: any,
+  ref: any,
+  component: any,
   ownerState: {
     color: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error',
     variant: 'filled' | 'outlined' | 'soft' | 'ghost',

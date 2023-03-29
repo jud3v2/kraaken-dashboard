@@ -27,6 +27,7 @@ const Label = forwardRef(({ children, color = 'default', variant = 'soft', start
   };
 
   return (
+    // @ts-nocheck
     <StyledLabel
       ref={ref}
       component="span"
