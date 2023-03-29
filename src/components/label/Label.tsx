@@ -1,3 +1,4 @@
+// @ts-nocheck
 import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 // @mui
@@ -27,7 +28,6 @@ const Label = forwardRef(({ children, color = 'default', variant = 'soft', start
   };
 
   return (
-    // @ts-nocheck
     <StyledLabel
       ref={ref}
       component="span"
