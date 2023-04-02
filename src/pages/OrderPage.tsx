@@ -487,7 +487,7 @@ export default function CategoryPage() {
             <TextField sx={{my: 1}} name='phoneNumber' type='text' required onChange={handleChange} label='Numéro de téléphone du client' value={newOrder.phoneNumber} />
           </Stack>
           <Stack>
-            <LoadingButton loading={orderCreateLoading} onClick={() => mutateCreateOrder()}>
+            <LoadingButton loading={orderCreateLoading} variant='contained' onClick={() => mutateCreateOrder()}>
               Créer la commande
             </LoadingButton>
           </Stack>
