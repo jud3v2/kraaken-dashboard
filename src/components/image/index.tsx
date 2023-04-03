@@ -23,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function ImageComponent(props: {images: Image[], productUUID: string}) {
     // Récupération des images
-    const imagesProps: Image[] = props.images
+    const imagesProps: Image[] = props.images.filter((image: Image) => image.isOption === false)
 
     // Gestion des images
     const [images, setImages] = useState([]);
@@ -128,6 +128,8 @@ export default function ImageComponent(props: {images: Image[], productUUID: str
         e.preventDefault()
         mutateFirst(uuid)
     }
+
+    console.log(imagesProps, props.productUUID)
 
     return (
         <Card sx={{my: 2}}>

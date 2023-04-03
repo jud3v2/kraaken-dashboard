@@ -157,6 +157,8 @@ export default function OptionPage(props: any) {
         mutateFirst(uuid)
     }
 
+    const optionImages: Image[] = result?.productImage?.filter((image: Image) => image.isOption === true)
+
 
     return (
         
@@ -187,7 +189,7 @@ export default function OptionPage(props: any) {
               </Stack>
               <Stack sx={{ my: 3 }}>
                   <Stack flexDirection={'row'} justifyContent={'space-around'} sx={{ height: '10rem' }}>
-                      {result && result.productImage.length > 0 ? result.productImage.map((image: Image, index: number) => (
+                      {result && optionImages.length > 0 ? optionImages.map((image: Image, index: number) => (
                           <div key={index} className="image-item">
                               <Stack sx={{ mx: 1, width: '140px', height: '140px' }}>
                                   <CardMedia sx={{ maxWidth: '100%', maxHeight: '100%', borderRadius: 2 }} component='img' image={api.imageGet(image.path)} />
@@ -207,7 +209,7 @@ export default function OptionPage(props: any) {
                   </Stack>
               </Stack>
               <Divider sx={{ my: 4 }} />
-              {result && result.productImage.length < maxNumber ? <>
+              {result && optionImages.length < maxNumber ? <>
                   <Stack sx={{ my: 2 }}>
                       <ImageUploading
                           multiple
@@ -233,7 +235,7 @@ export default function OptionPage(props: any) {
                                           style={isDragging ? { color: 'red' } : undefined}
                                           onClick={onImageUpload}
                                           variant='contained'
-                                          disabled={maxNumber === result.productImage.length}
+                                          disabled={maxNumber === optionImages.length}
                                           {...dragProps}
                                       >
                                           Cliquer ici pour ajouter des images
